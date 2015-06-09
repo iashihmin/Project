@@ -17,10 +17,11 @@ screen_width, screen_height = background_size
 screen = pygame.display.set_mode([screen_width, screen_height])
 
 x_speed = 0
-y_speed = 0
+
+speed = [0, 0, 0]
 
 x_coord = 200
-y_coord = 450
+y_coord = 600
 
 x = 0
 y = 0
@@ -36,31 +37,40 @@ clock = pygame.time.Clock()
 pygame.mouse.set_visible(0)
 
 
+pygame.display.update()
 while done:
-    pygame.display.update()
+    
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             done = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
-                y_speed = -5
+                speed.append(speed[-1]-1)
+                y_speed = speed[-1]
+                del speed[0]
+                
             elif event.key == pygame.K_DOWN:
-                y_speed = 5
+                speed.append(speed[-1]+1)
+                del speed[0]
+                
             elif event.key == pygame.K_LEFT:
-                x_speed = -2
+                if speed[-1] != 0:
+                    x_speed = -2
             elif event.key == pygame.K_RIGHT:
-                x_speed = 2
+                if speed[-1] != 0:
+                    x_speed = 2
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT:
                 x_speed = 0
             elif event.key == pygame.K_RIGHT:
                 x_speed = 0
-            elif event.key == pygame.K_UP:
-                y_speed = 0
-            elif event.key == pygame.K_DOWN:
-                y_speed = 0
-    y1 += 5
-    y += 5
+
+
+    if speed[-1] > 0:
+        speed[-1] = 0
+
+    y1 -= speed[-1]
+    y -= speed[-1]
     screen.blit(background, (x,y))
     screen.blit(background, (x,y1))
 
@@ -71,9 +81,9 @@ while done:
         
     player.rect.x = x_coord
     player.rect.y = y_coord
-    
+
     x_coord += x_speed
-    y_coord += y_speed
+
           
     sprites.draw(screen)
 
