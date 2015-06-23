@@ -19,29 +19,58 @@ def check(elem, v1, v2):
         return False
     else:
         return True
+
+def digit(elem):
+    return elem.isdigit()
+
 mas = []
-print("Данная программа представляет собой систему управления автомобилем на трассе.")
+
+print("Данная программа представляет собой систему управления автомобилем на трассе. Просьба вводить все данные целыми числами.")
 print("Введите начальную скорость автомобиля(от 0 до 100 км\ч):")
-mas.append(int(input()))
+mas.append(input())
+while digit(mas[-1]) == False:
+    del mas[-1]
+    print("Пожалуйста, используйте только цифры:")
+    mas.append(input())
+mas[-1] = float(mas[-1])
 while check(mas[-1], 0, 100) != True:
     del mas[-1]
     print("Пожалуйста, введите начальную скорость от 0 до 100 км\ч:")
-    mas.append(int(input()))
+    mas.append(float(input()))
+mas[-1] = math.trunc(mas[-1])
+mas[-1] = int(mas[-1])
+
 print("Введите приоритетную скорость автомобиля(от 80 до 100 км\ч):")
-mas.append(int(input()))
+mas.append(input())
+while digit(mas[-1]) == False:
+    del mas[-1]
+    print("Пожалуйста, используйте только цифры:")
+    mas.append(input())
+mas[-1] = float(mas[-1])
 while check(mas[-1], 80, 100) != True:
     del mas[-1]
     print("Пожалуйста, введите приоритетную скорость от 80 до 100 км\ч:")
-    mas.append(int(input()))
+    mas.append(float(input()))
+mas[-1] = math.trunc(mas[-1])
+mas[-1] = int(mas[-1])
+
 print("Введите мощность автомобиля(от 75 до 150 л.с.):")
-mas.append(int(input()))
+mas.append(input())
+while digit(mas[-1]) == False:
+    del mas[-1]
+    print("Пожалуйста, используйте только цифры:")
+    mas.append(input())
+mas[-1] = float(mas[-1])
 while check(mas[-1], 75, 150) != True:
     del mas[-1]
     print("Пожалуйста, введите мощность автомобиля от 75 до 150 л.с.:")
-    mas.append(int(input()))
+    mas.append(float(input()))
+mas[-1] = math.trunc(mas[-1])
+mas[-1] = int(mas[-1])
 initial = -int(mas[0])/2
 priority = int(mas[1])
 acceleration = (int(mas[2])-25)/1000
+print(mas)
 
 inf_spd = pygame.font.Font(None, 50)
 
@@ -82,6 +111,7 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
             if b_spd < b1_spd:
                 if distance1 <= distance2:
                     if s_counts >= f_counts:
+                        #print(1)
                         if py_spd*2 < b_spd:
                             py_spd = py_spd + acceleration
                         if py_spd*2 > b_spd:
@@ -92,33 +122,41 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
                     if distance2 < 200:
                         if c1 > c2:
                             if px_crd > 45:
+                                #print(2)
                                 l_spd = x_spd
                                 if -py_spd*2 < priority:
                                     py_spd = py_spd - acceleration
-                                if -py_spd*2 > priority+1:
+                                if -py_spd*2 > priority:
                                     py_spd = py_spd + acceleration
 
                         else:
                             s_counts = math.fabs((py_spd - b_spd) / acceleration)
                             f_counts = (distance / acceleration)
+                            #print('ddfd')
                             if s_counts >= f_counts:
-                                if px_crd == 235 and by_crd < 800:
+                                if (px_crd >= 234 and px_crd <= 236) and by_crd < 800:
+                                    #print(3)
                                     if py_spd*2 < b_spd:
                                         py_spd = py_spd + acceleration
                                     if py_spd*2 > b_spd:
                                         py_spd = py_spd - acceleration
                     else:
+                        #print(4)
                         if -py_spd*2 < priority:
                             py_spd = py_spd - acceleration
                         if -py_spd*2 > priority+1:
                             py_spd = py_spd + acceleration
                    
             if b_spd > b1_spd:
+                #print('a')
                 if distance1 >= distance2:
+                    #print('b')
                     s_counts = math.fabs((py_spd - b_spd) / acceleration)
                     f_counts = (distance / acceleration)
                     if s_counts >= f_counts:
-                        if px_crd == 235 and by_crd < 800:
+                        #print(px_crd)
+                        if (px_crd >= 234 and px_crd <= 236) and by_crd < 800:
+                            #print(5)
                             if py_spd*2 < b_spd:
                                 py_spd = py_spd + acceleration
                             if py_spd*2 > b_spd:
@@ -126,45 +164,68 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
                             if py_spd*2 > b_spd-3 and py_spd*2 < b_spd:
                                 l_spd = x_spd
                         if px_crd >= 45 and px_crd < 235:
-                            print(px_crd)
-                            if px_crd == 45:
+                            #print('c')
+                            if px_crd >= 44 and px_crd <= 46:
                                 if distance1 < 200:
-                                    print(2)
+                                    #print(6)
                                     if py_spd*2 < b1_spd:
                                         py_spd = py_spd + acceleration  
                                     if py_spd*2 > b1_spd:
                                         py_spd = py_spd - acceleration
                                 else:
+                                    #print(7)
                                     if -py_spd*2 < priority:
                                         py_spd = py_spd - acceleration
-                                    if -py_spd*2 > priority+1:
+                                    if -py_spd*2 > priority:
                                         py_spd = py_spd + acceleration
                             else:
                                 if distance1 >= 200:
-                                    print(3)
+                                    #print(8)
                                     if -py_spd*2 < priority:
                                         py_spd = py_spd - acceleration
                                     if -py_spd*2 > priority+1:
                                         py_spd = py_spd + acceleration
                                 if by1_crd < by_crd:
                                     l_spd = x_spd
+
+                    else:
+                        #print(13)
+                        if distance2 < 200:
+                            #print(12)
+                            if py_spd*2 < b_spd:
+                                py_spd = py_spd + acceleration
+                            if py_spd*2 > b_spd:
+                                py_spd = py_spd - acceleration
+                        if -py_spd*2 < priority:
+                            py_spd = py_spd - acceleration
+                        if -py_spd*2 > priority:
+                            py_spd = py_spd + acceleration
                 else:
+                    #print(9)
                     if px_crd < 235:
                         l_spd = -x_spd
                     s_counts = math.fabs((py_spd - b_spd) / acceleration)
                     f_counts = (distance / acceleration)
                     if s_counts >= f_counts:
                         if px_crd == 235:
+                            #print(10)
                             if py_spd*2 < b_spd:
                                 py_spd = py_spd + acceleration
                             if py_spd*2 > b_spd:
-                                py_spd = py_spd - acceleration      
+                                py_spd = py_spd - acceleration
+                    if distance2 < 200:
+                        #print('very very very very very very very very very very very very very very very very very very long string')
+                        if py_spd*2 < b_spd:
+                            py_spd = py_spd + acceleration
+                        if py_spd*2 > b_spd:
+                            py_spd = py_spd - acceleration
     else:
+        #print(11)
         if px_crd < 235:
             l_spd = -x_spd
         if -py_spd*2 < priority:
             py_spd = py_spd - acceleration
-        if -py_spd*2 > priority+1:
+        if -py_spd*2 > priority:
             py_spd = py_spd + acceleration
     mas.append(l_spd)
     mas.append(py_spd)
@@ -179,7 +240,7 @@ sprites.add(bot)
 sprites.add(bot1)
 a = 0
 done = True
-
+massiv = []
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(0)
 
@@ -191,7 +252,7 @@ while done:
             done = False
 
     if by_crd > 800:
-        by_crd = random.uniform(-2*screen_height, -screen_height*(0.5))
+        by_crd = random.uniform(-screen_height, -screen_height*(0.5))
         bot_real_speed = random.randint(-90, -70)
     if by_crd1 > 800:
         by_crd1 = random.uniform(-4*screen_height, -3*screen_height)
@@ -219,6 +280,30 @@ while done:
     else:
         x_speed = 50/speed[-1]
 
+    massiv.append(bot_real_speed)
+    massiv.append(bot_real_speed1)
+    if len(massiv) >= 4:
+        if massiv[0] == massiv[2]:
+            del massiv[2]
+        else:
+            massiv[0] = massiv[2]
+            del massiv[2]
+            print(massiv)
+        if len(massiv) >= 4:
+            if massiv[1] == massiv[3]:
+                del massiv[3]
+            else:
+                massiv[1] = massiv[3]
+                del massiv[3]
+                print(massiv)
+        else:
+            if massiv[1] == massiv[2]:
+                del massiv[2]
+            else:
+                massiv[1] = massiv[2]
+                del massiv[2]
+                print(massiv)
+    
     by_spd = - (bot_real_speed - speed[-1]*2) / 30
     by_crd -= by_spd
     by_spd1 = - (bot_real_speed1 - speed[-1]*2) / 30
