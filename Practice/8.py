@@ -13,6 +13,7 @@ class Block(pygame.sprite.Sprite):
 
 pygame.init()
 pygame.font.init()
+
 '''
 def key():
     while 1:
@@ -45,7 +46,13 @@ def spd(screen, speed):
 screen = pygame.display.set_mode((900,50))
 #mas = (''.join(map(str, spd(screen, 'Введите через запятую:Начальную скорость(от 90 до 100км/ч),Приоритетную скорость(от 90 до 130км/ч),Мощность(от 70 до 150 л.с.)')))).split(',')
 mas = (''.join(map(str, spd(screen, ' ')))).split(',')'''
-mas = [100,100,100]
+mas = []
+print("Введите начальную скорость автомобиля:")
+mas.append(int(input()))
+print("Введите приоритетную скорость автомобиля(от 80 до 100 км\ч):")
+mas.append(int(input()))
+print("Введите мощность автомобиля(от 75 до 150 л.с.):")
+mas.append(int(input()))
 initial = -int(mas[0])/2
 priority = int(mas[1])
 acceleration = (int(mas[2])-25)/1000
@@ -66,16 +73,17 @@ y = 0
 y1 = -screen_height
 
 by_spd = 0
-bot_real_speed = -90
+bot_real_speed = -75
 bx_crd = 235
 by_crd = -199
 
 by_spd1 = 0
-bot_real_speed1 = -80
+bot_real_speed1 = -60
 bx_crd1 = 45
 by_crd1 = -199
 
 def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_crd, py_spd, x_spd, by1_crd):
+    a = 0
     mas = []
     l_spd = 0
     distance = py_crd - by_crd - 199  - 200
@@ -95,22 +103,29 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
                 else:
                     c1 = (distance2 + 450)/(-(b_spd+priority*2)/30)
                     c2 = (distance1 - distance2 - 450)/(-(b1_spd+priority*2)/30)
-                    if c1 > c2:
-                        if px_crd > 45:
-                            l_spd = x_spd
-                            if -py_spd*2 < priority:
-                                py_spd = py_spd - acceleration
-                            if -py_spd*2 > priority+1:
-                                py_spd = py_spd + acceleration
-                    else:
-                        s_counts = math.fabs((py_spd - b_spd) / acceleration)
-                        f_counts = (distance / acceleration)
-                        if s_counts >= f_counts:
-                            if px_crd == 235 and by_crd < 800:
-                                if py_spd*2 < b_spd:
+                    if distance2 < 200:
+                        if c1 > c2:
+                            if px_crd > 45:
+                                l_spd = x_spd
+                                if -py_spd*2 < priority:
+                                    py_spd = py_spd - acceleration
+                                if -py_spd*2 > priority+1:
                                     py_spd = py_spd + acceleration
-                                if py_spd*2 > b_spd:
-                                    py_spd = py_spd - acceleration 
+
+                        else:
+                            s_counts = math.fabs((py_spd - b_spd) / acceleration)
+                            f_counts = (distance / acceleration)
+                            if s_counts >= f_counts:
+                                if px_crd == 235 and by_crd < 800:
+                                    if py_spd*2 < b_spd:
+                                        py_spd = py_spd + acceleration
+                                    if py_spd*2 > b_spd:
+                                        py_spd = py_spd - acceleration
+                    else:
+                        if -py_spd*2 < priority:
+                            py_spd = py_spd - acceleration
+                        if -py_spd*2 > priority+1:
+                            py_spd = py_spd + acceleration
                    
             if b_spd > b1_spd:
                 if distance1 >= distance2:
@@ -125,14 +140,22 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
                             if py_spd*2 > b_spd-3 and py_spd*2 < b_spd:
                                 l_spd = x_spd
                         if px_crd >= 45 and px_crd < 235:
+                            print(px_crd)
                             if px_crd == 45:
                                 if distance1 < 200:
+                                    print(2)
                                     if py_spd*2 < b1_spd:
                                         py_spd = py_spd + acceleration  
                                     if py_spd*2 > b1_spd:
-                                        py_spd = py_spd - acceleration                                                                                                                                                             
+                                        py_spd = py_spd - acceleration
+                                else:
+                                    if -py_spd*2 < priority:
+                                        py_spd = py_spd - acceleration
+                                    if -py_spd*2 > priority+1:
+                                        py_spd = py_spd + acceleration
                             else:
                                 if distance1 >= 200:
+                                    print(3)
                                     if -py_spd*2 < priority:
                                         py_spd = py_spd - acceleration
                                     if -py_spd*2 > priority+1:
@@ -149,8 +172,7 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
                             if py_spd*2 < b_spd:
                                 py_spd = py_spd + acceleration
                             if py_spd*2 > b_spd:
-                                py_spd = py_spd - acceleration
-                    
+                                py_spd = py_spd - acceleration      
     else:
         if px_crd < 235:
             l_spd = -x_spd
@@ -183,19 +205,29 @@ while done:
             done = False
 
     if by_crd > 800:
-        by_crd = random.uniform(-3*screen_height, -screen_height)
+        by_crd = random.uniform(-2*screen_height, -screen_height*(0.5))
         bot_real_speed = random.randint(-90, -70)
     if by_crd1 > 800:
-        by_crd1 = random.uniform(-3*screen_height, -2*screen_height)
+        by_crd1 = random.uniform(-4*screen_height, -3*screen_height)
         bot_real_speed1 = random.randint(-90,-70)
-        if bot_real_speed1 < (bot_real_speed + 5) or bot_real_speed1 > (bot_real_speed - 5):
-            print(1)
+        if bot_real_speed1 < (bot_real_speed + 5) and bot_real_speed1 > (bot_real_speed - 5):
             bot_real_speed1 = bot_real_speed-10
             if bot_real_speed1 < -90:
-                bot_real_speed1 = bot_real_speed + 10
-    print(bot_real_speed1, bot_real_speed)
+               bot_real_speed1 = bot_real_speed + 10
+
+    if priority < 85:    
+        if -priority > (bot_real_speed + 5) or -priority < (bot_real_speed - 5):
+            if -priority <= -80:
+                bot_real_speed = -priority + 10
+        if -priority > (bot_real_speed1 + 5) or -priority < (bot_real_speed1 - 5):
+            if -priority <= -80:
+                bot_real_speed1 = -priority + 5
+
+    if bot_real_speed1 < (bot_real_speed + 5) and bot_real_speed1 > (bot_real_speed - 5):
+        bot_real_speed1 = bot_real_speed-10
+        if bot_real_speed1 < -90:
+            bot_real_speed1 = bot_real_speed + 10
         
-    
     if speed[-1] > -50:
         x_speed = -1
     else:
@@ -206,11 +238,9 @@ while done:
     by_spd1 = - (bot_real_speed1 - speed[-1]*2) / 30
     by_crd1 -= by_spd1
     
-
     mas = double_overtaking(y_coord, by_crd, by_spd, bot_real_speed, bot_real_speed1, x_coord, speed[-1], x_speed, by_crd1)
     x_speed = mas[0]
     speed[-1] = mas[1]
-
 
     if speed[-1] > 0:
         speed[-1] = 0
@@ -243,7 +273,7 @@ while done:
     sprites.draw(screen)
     screen.blit(inf_spd.render(str(int(-speed[-1]*2)) + 'км/ч', 1, WHITE), (200,5) )
 
-    clock.tick(100)
+    clock.tick(70)
 
     pygame.display.flip()
     pygame.display.update()
