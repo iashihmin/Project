@@ -70,7 +70,6 @@ mas[-1] = int(mas[-1])
 initial = -int(mas[0])/2
 priority = int(mas[1])
 acceleration = (int(mas[2])-25)/1000
-print(mas)
 
 inf_spd = pygame.font.Font(None, 50)
 
@@ -144,7 +143,7 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
                         #print(4)
                         if -py_spd*2 < priority:
                             py_spd = py_spd - acceleration
-                        if -py_spd*2 > priority+1:
+                        if -py_spd*2 > priority:
                             py_spd = py_spd + acceleration
                    
             if b_spd > b1_spd:
@@ -183,7 +182,7 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
                                     #print(8)
                                     if -py_spd*2 < priority:
                                         py_spd = py_spd - acceleration
-                                    if -py_spd*2 > priority+1:
+                                    if -py_spd*2 > priority:
                                         py_spd = py_spd + acceleration
                                 if by1_crd < by_crd:
                                     l_spd = x_spd
@@ -220,13 +219,13 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
                         if py_spd*2 > b_spd:
                             py_spd = py_spd - acceleration
     else:
-        #print(11)
+       # print(11)
         if px_crd < 235:
             l_spd = -x_spd
         if -py_spd*2 < priority:
             py_spd = py_spd - acceleration
         if -py_spd*2 > priority:
-            py_spd = py_spd + acceleration
+            py_spd = py_spd + acceleration*2
     mas.append(l_spd)
     mas.append(py_spd)
     return mas 
@@ -280,29 +279,7 @@ while done:
     else:
         x_speed = 50/speed[-1]
 
-    massiv.append(bot_real_speed)
-    massiv.append(bot_real_speed1)
-    if len(massiv) >= 4:
-        if massiv[0] == massiv[2]:
-            del massiv[2]
-        else:
-            massiv[0] = massiv[2]
-            del massiv[2]
-            print(massiv)
-        if len(massiv) >= 4:
-            if massiv[1] == massiv[3]:
-                del massiv[3]
-            else:
-                massiv[1] = massiv[3]
-                del massiv[3]
-                print(massiv)
-        else:
-            if massiv[1] == massiv[2]:
-                del massiv[2]
-            else:
-                massiv[1] = massiv[2]
-                del massiv[2]
-                print(massiv)
+    #print(bot_real_speed1, bot_real_speed)
     
     by_spd = - (bot_real_speed - speed[-1]*2) / 30
     by_crd -= by_spd
@@ -342,10 +319,10 @@ while done:
     screen.blit(background, (x,y))
     screen.blit(background, (x,y1))
     sprites.draw(screen)
-    screen.blit(inf_spd.render(str(int(-speed[-1]*2)) + 'км/ч', 1, WHITE), (200,5) )
+    screen.blit(inf_spd.render(str(int(round(-speed[-1]*2))) + 'км/ч', 1, WHITE), (200,5) )
 
     clock.tick(70)
-
+    
     pygame.display.flip()
     pygame.display.update()
 
