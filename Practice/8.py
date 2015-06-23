@@ -14,45 +14,31 @@ class Block(pygame.sprite.Sprite):
 pygame.init()
 pygame.font.init()
 
-'''
-def key():
-    while 1:
-        event = pygame.event.poll()
-        if event.type == KEYDOWN:
-            return event.key
-        else:
-            pass
-
-def draw(screen, speed):
-    font = pygame.font.Font(None,25)
-    screen.blit(font.render(speed, 1, WHITE),(0, (screen.get_height()/2)))
-    pygame.display.flip()
-
-def spd(screen, speed):
-    mas_of_digits = []
-    draw(screen, speed + ": " )
-    while 1:
-        inkey = key()
-        if inkey == K_RETURN:
-            if len(mas_of_digits)!=0:
-                break
-        if inkey == 8:
-            mas_of_digits = mas_of_digits[0:-1]
-        elif inkey <= 57 and inkey >= 48 or inkey == 44:
-            mas_of_digits.append(chr(inkey))
-        answer = ''.join(map(str, mas_of_digits))
-        draw(screen, speed + ': ' + answer)
-    return mas_of_digits
-screen = pygame.display.set_mode((900,50))
-#mas = (''.join(map(str, spd(screen, 'Введите через запятую:Начальную скорость(от 90 до 100км/ч),Приоритетную скорость(от 90 до 130км/ч),Мощность(от 70 до 150 л.с.)')))).split(',')
-mas = (''.join(map(str, spd(screen, ' ')))).split(',')'''
+def check(elem, v1, v2):
+    if elem < v1 or elem > v2:
+        return False
+    else:
+        return True
 mas = []
-print("Введите начальную скорость автомобиля:")
+print("Данная программа представляет собой систему управления автомобилем на трассе.")
+print("Введите начальную скорость автомобиля(от 0 до 100 км\ч):")
 mas.append(int(input()))
+while check(mas[-1], 0, 100) != True:
+    del mas[-1]
+    print("Пожалуйста, введите начальную скорость от 0 до 100 км\ч:")
+    mas.append(int(input()))
 print("Введите приоритетную скорость автомобиля(от 80 до 100 км\ч):")
 mas.append(int(input()))
+while check(mas[-1], 80, 100) != True:
+    del mas[-1]
+    print("Пожалуйста, введите приоритетную скорость от 80 до 100 км\ч:")
+    mas.append(int(input()))
 print("Введите мощность автомобиля(от 75 до 150 л.с.):")
 mas.append(int(input()))
+while check(mas[-1], 75, 150) != True:
+    del mas[-1]
+    print("Пожалуйста, введите мощность автомобиля от 75 до 150 л.с.:")
+    mas.append(int(input()))
 initial = -int(mas[0])/2
 priority = int(mas[1])
 acceleration = (int(mas[2])-25)/1000
