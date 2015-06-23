@@ -4,6 +4,8 @@ import random
 from pygame.locals import *
 from colors import *
 
+#Класс для считывания изображения с компьютера для дальнейшего его
+#использования в программе
 class Block(pygame.sprite.Sprite):
     def __init__(self, filename):
         super().__init__() 
@@ -14,17 +16,20 @@ class Block(pygame.sprite.Sprite):
 pygame.init()
 pygame.font.init()
 
+#Функция для проверки того, что введенные пользователем данные удовлетворяют
+#наложенным на них требованиям
 def check(elem, v1, v2):
     if elem < v1 or elem > v2:
         return False
     else:
         return True
-
+#Функция для проверки наличия в строке различных символов, помимо цифр
 def digit(elem):
     return elem.isdigit()
 
 mas = []
 
+#Ввод данных пользователем
 print("Данная программа представляет собой систему управления автомобилем на трассе. Просьба вводить все данные целыми числами.")
 print("Введите начальную скорость автомобиля(от 0 до 100 км\ч):")
 mas.append(input())
@@ -73,11 +78,13 @@ acceleration = (int(mas[2])-25)/1000
 
 inf_spd = pygame.font.Font(None, 50)
 
+#Загрузка изображения заднего фона и установка размеров экрана приложения
 background = pygame.image.load('road.jpg')
 background_size = background.get_size()
 screen_width, screen_height = background_size
 screen = pygame.display.set_mode([screen_width, screen_height])
 
+#Ручной ввод начальных данных управляемого автомобиля и ботов
 x_speed = 0
 speed = [1, 1, initial]
 x_coord = 235
@@ -96,6 +103,8 @@ bot_real_speed1 = -50
 bx_crd1 = 45
 by_crd1 = -199
 
+#Функция, задающая систему управления, принимающая на вход скорости и координаты ботов и управляемого автомобиля, а
+#на выход выдающая скорость управляемого автомобиля и поворот его руля
 def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_crd, py_spd, x_spd, by1_crd):
     a = 0
     mas = []
@@ -216,6 +225,7 @@ def double_overtaking(py_crd, by_crd, speed_of_convergence, b_spd, b1_spd, px_cr
     mas.append(py_spd)
     return mas 
 
+#Создание группы объектов, состоящих из автомобилей, для дальнейшего их изображения на экране
 sprites = pygame.sprite.Group()
 player = Block('car.png')
 bot = Block('car2.png')
@@ -223,13 +233,15 @@ bot1 = Block('car2.png')
 sprites.add(player)
 sprites.add(bot)
 sprites.add(bot1)
-a = 0
+
 done = True
 massiv = []
 clock = pygame.time.Clock()
 pygame.mouse.set_visible(0)
 
 pygame.display.update()
+
+#Цикл работы программы, в котором обновляются все данные и который отображает работу программы на экран
 while done:
     a = 0
     for event in pygame.event.get():
@@ -238,7 +250,8 @@ while done:
 
     end = -priority + 10
     start = end + 20
-    
+
+    #Выбор скорости автомобилей-ботов случайным образом
     if by_crd > 800:
         by_crd = random.uniform(-screen_height, -screen_height*(0.5))
         bot_real_speed = random.randint(end, start)
@@ -256,24 +269,27 @@ while done:
             bot_real_speed1 = bot_real_speed + 10
 
 
-    
+    #Определение скорости поворота управляемого автомобиля в зависимости от скорости его движения
     if speed[-1] > -50:
         x_speed = -1
     else:
         x_speed = 50/speed[-1]
-    
+
+    #Подсчет скорости сближения управляемого автомобиля с автомобилями-ботами на экране
     by_spd = - (bot_real_speed - speed[-1]*2) / 30
     by_crd -= by_spd
     by_spd1 = - (bot_real_speed1 - speed[-1]*2) / 30
     by_crd1 -= by_spd1
-    
+
+    #Вызов функции, описывающей систему управления
     mas = double_overtaking(y_coord, by_crd, by_spd, bot_real_speed, bot_real_speed1, x_coord, speed[-1], x_speed, by_crd1)
     x_speed = mas[0]
     speed[-1] = mas[1]
 
     if speed[-1] > 0:
         speed[-1] = 0
-           
+
+    #Прокрутка заднего фона в зависимости от скорости движения управляемого автомобиля
     y1 -= speed[-1]/(1.4)
     y -= speed[-1]/(1.4)
     if y > screen_height:
@@ -281,6 +297,7 @@ while done:
     if y1 > screen_height:
         y1 = - screen_height
 
+    #Считывания координат задействованных в приложение объектов
     player.rect.x = x_coord
     player.rect.y = y_coord
     
@@ -294,7 +311,8 @@ while done:
 
     if x_coord > 235 or x_coord < 45:
         x_speed = 0
-              
+
+    #Отображения всех объектов на экран приложения
     screen.blit(background, (x,y))
     screen.blit(background, (x,y1))
     sprites.draw(screen)
